@@ -1,6 +1,7 @@
 #include "CPlayer.h"
 #include "Utilities/CLog.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 
@@ -17,13 +18,26 @@ ACPlayer::ACPlayer()
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
+	ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClass(TEXT("/Game/Player/ABP_CPlayer"));
+	if (AnimInstanceClass.Succeeded()) {
+		GetMesh()->SetAnimInstanceClass(AnimInstanceClass.Class);
+	}
+	
+
+	//SpringArm Comp
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
+	SpringArmComp->SetRelativeLocation(FVector(0, 0, 60));
+	SpringArmComp->bUsePawnControlRotation = true;
 
+	//Camera Comp
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
-	//Todo. 
+	//Movement Comp
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
 
 }
 
@@ -45,6 +59,13 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACPlayer::OnMoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACPlayer::OnMoveRight);
+
+	PlayerInputComponent->BindAxis("Turn", this, &ACPlayer::OnTurn);
+	PlayerInputComponent->BindAxis("LookUp", this, &ACPlayer::OnLookUp);
+
+
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPlayer::OnSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayer::OffSprint);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -63,5 +84,25 @@ void ACPlayer::OnMoveRight(float Axis)
 	FVector Direction = FQuat(ControlRot).GetRightVector().GetSafeNormal2D();
 
 	AddMovementInput(Direction, Axis);
+}
+
+void ACPlayer::OnTurn(float Axis)
+{
+	AddControllerYawInput(Axis);
+}
+
+void ACPlayer::OnLookUp(float Axis)
+{
+	AddControllerPitchInput(Axis);
+}
+
+void ACPlayer::OnSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+}
+
+void ACPlayer::OffSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 }
 
