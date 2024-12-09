@@ -9,20 +9,20 @@ ACPlayer::ACPlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Mesh Comp
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Character/Mesh/SK_Mannequin"));
-
-	if (MeshAsset.Succeeded()) {
+	if (MeshAsset.Succeeded())
+	{
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
-
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 
 	ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClass(TEXT("/Game/Player/ABP_CPlayer"));
-	if (AnimInstanceClass.Succeeded()) {
+	if (AnimInstanceClass.Succeeded())
+	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClass.Class);
 	}
-	
 
 	//SpringArm Comp
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
@@ -38,7 +38,6 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
-
 }
 
 void ACPlayer::BeginPlay()
@@ -63,7 +62,6 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Turn", this, &ACPlayer::OnTurn);
 	PlayerInputComponent->BindAxis("LookUp", this, &ACPlayer::OnLookUp);
 
-
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPlayer::OnSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayer::OffSprint);
 }
@@ -71,8 +69,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ACPlayer::OnMoveForward(float Axis)
 {
 	FRotator ControlRot = FRotator(0, GetControlRotation().Yaw, 0);
-
-	FVector Direction = FQuat(ControlRot).GetForwardVector().GetSafeNormal2D();
+	FVector Direction =  FQuat(ControlRot).GetForwardVector().GetSafeNormal2D();
 
 	AddMovementInput(Direction, Axis);
 }
@@ -80,7 +77,6 @@ void ACPlayer::OnMoveForward(float Axis)
 void ACPlayer::OnMoveRight(float Axis)
 {
 	FRotator ControlRot = FRotator(0, GetControlRotation().Yaw, 0);
-
 	FVector Direction = FQuat(ControlRot).GetRightVector().GetSafeNormal2D();
 
 	AddMovementInput(Direction, Axis);
@@ -105,4 +101,3 @@ void ACPlayer::OffSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 }
-

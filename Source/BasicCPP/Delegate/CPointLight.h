@@ -2,29 +2,33 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "CBoxBase.generated.h"
+#include "CPointLight.generated.h"
 
-class UBoxComponent;
-class UTextRenderComponent;
+class UPointLightComponent;
 
 UCLASS()
-class BASICCPP_API ACBoxBase : public AActor
+class BASICCPP_API ACPointLight : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	ACBoxBase();
+	ACPointLight();
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	void OnLights();
+	void OffLights();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USceneComponent* RootComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-	UBoxComponent* BoxComp;
+	UPointLightComponent* LightComp1;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-	UTextRenderComponent* TextRenderComp;
+	UPointLightComponent* LightComp2;
+
 };
