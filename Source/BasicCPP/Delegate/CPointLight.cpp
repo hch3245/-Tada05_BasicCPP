@@ -1,5 +1,7 @@
 #include "CPointLight.h"
 #include "Components/PointLightComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "CDelegate.h"
 
 ACPointLight::ACPointLight()
 {
@@ -24,14 +26,42 @@ ACPointLight::ACPointLight()
 void ACPointLight::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//Todo. Binding
+
+	LightComp1->SetVisibility(false);
+	LightComp2->SetVisibility(false);
+
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACDelegate::StaticClass(), Actors);
+
+	if (Actors.Num() < 1)
+	{
+		return;
+	}
+
+	ACDelegate* DelegateObject = Cast<ACDelegate>(Actors[0]);
+	if (DelegateObject)
+	{
+		DelegateObject->OnBoxTriggerBeginOveralp.BindUObject(this, &ACPointLight::OnLights);
+		DelegateObject->OnBoxTriggerEndOveralp.BindUObject(this, &ACPointLight::OffLights);
+		DelegateObject->OnBoxTriggerOveralpOneParam.BindUFunction(this, "SetLight1Color");
+	}
 }
 
 void ACPointLight::OnLights()
 {
+	LightComp2->SetVisibility(true);
 }
 
 void ACPointLight::OffLights()
 {
+	LightComp1->SetVisibility(false);
+	LightComp2->SetVisibility(false);
+}
+
+FString ACPointLight::SetLight1Color(FLinearColor InColor)
+{
+	LightComp1->SetVisibility(true);
+	LightComp1->SetLightColor(InColor);
+
+	return InColor.ToString();
 }

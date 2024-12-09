@@ -21,6 +21,9 @@ private:
 	void OnLights();
 	void OffLights();
 
+	UFUNCTION()
+	FString SetLight1Color (FLinearColor InColor);
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USceneComponent* RootComp;

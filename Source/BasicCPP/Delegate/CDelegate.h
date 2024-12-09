@@ -4,7 +4,8 @@
 #include "Collision/CBoxBase.h"
 #include "CDelegate.generated.h"
 
-DECLARE_DELEGATE(FBoxTriggerOveralp);
+DECLARE_DELEGATE(FBoxTriggerOveralp); // void
+DECLARE_DELEGATE_RetVal_OneParam(FString,FBoxTriggerOveralpOneParam, FLinearColor); //FString __(FLinearColor) 
 
 UCLASS()
 class BASICCPP_API ACDelegate : public ACBoxBase
@@ -24,5 +25,7 @@ private:
 public:
 	FBoxTriggerOveralp OnBoxTriggerBeginOveralp;
 	FBoxTriggerOveralp OnBoxTriggerEndOveralp;
+
+	FBoxTriggerOveralpOneParam OnBoxTriggerOveralpOneParam;
 	
 };
