@@ -101,3 +101,10 @@ void ACPlayer::OffSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 }
+
+void ACPlayer::SetBodyColor(FLinearColor InColor)
+{
+	FVector BodyColor = FVector(InColor.R, InColor.G, InColor.B);
+
+	GetMesh()->SetVectorParameterValueOnMaterials("BodyColor", BodyColor);
+}
