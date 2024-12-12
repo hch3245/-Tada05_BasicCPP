@@ -5,6 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "CSphereTrace.generated.h"
 
+class UParticleSystemComponent;
+
 UCLASS()
 class BASICCPP_API ACSphereTrace : public AActor
 {
@@ -20,4 +22,7 @@ public:
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USceneComponent* RootComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UParticleSystemComponent* ParticleComp;
 };
