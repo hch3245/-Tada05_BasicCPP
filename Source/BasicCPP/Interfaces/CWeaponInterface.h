@@ -1,25 +1,22 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "CWeaponInterface.generated.h"
 
-// This class does not need to be modified.
+class ACAR4;
+
 UINTERFACE(MinimalAPI)
 class UCWeaponInterface : public UInterface
 {
+	// Interface for Editor
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class BASICCPP_API ICWeaponInterface
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	virtual ACAR4* GetWeapon() = 0;
 };

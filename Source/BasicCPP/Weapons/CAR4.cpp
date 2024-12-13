@@ -25,8 +25,8 @@ ACAR4::ACAR4()
 		UnequipMontage = UnequipMontageAsset.Object;
 	}
 
-	HolsterSoket = "Holster_AR4";
-	HandSoket = "Hand_AR4";
+	HolsterSocket = "Holster_AR4";
+	HandSocket = "Hand_AR4";
 }
 
 void ACAR4::BeginPlay()
@@ -37,7 +37,7 @@ void ACAR4::BeginPlay()
 	AttachToComponent(
 		OwnerCharacter->GetMesh(),
 		FAttachmentTransformRules(EAttachmentRule::KeepRelative,true),
-		HolsterSoket
+		HolsterSocket
 	);
 }
 
@@ -52,15 +52,48 @@ void ACAR4::Equip()
 	if (bEquipped) return;
 	if (bPlayingMontage) return;
 
-	PrintLine();
-
 	bEquipped = true;
 	bPlayingMontage = true;
 
 	OwnerCharacter->PlayAnimMontage(EquipMontage);
 }
 
+void ACAR4::Begin_Equip()
+{
+	AttachToComponent(
+		OwnerCharacter->GetMesh(),
+		FAttachmentTransformRules(EAttachmentRule::KeepRelative, true),
+		HandSocket
+	);
+}
+
+void ACAR4::End_Equip()
+{
+	bPlayingMontage = false;
+}
+
 void ACAR4::Unequip()
 {
+	if (!bEquipped) return;
+	if (bPlayingMontage) return;
+
+	bEquipped = false;
+	bPlayingMontage = true;
+
+	OwnerCharacter->PlayAnimMontage(UnequipMontage);
+}
+
+void ACAR4::Begin_Unequip()
+{
+	AttachToComponent(
+		OwnerCharacter->GetMesh(),
+		FAttachmentTransformRules(EAttachmentRule::KeepRelative, true),
+		HolsterSocket
+	);
+}
+
+void ACAR4::End_Unequip()
+{
+	bPlayingMontage = false;
 }
 

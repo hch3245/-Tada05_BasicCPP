@@ -25,16 +25,24 @@ public:
 public:
 	FORCEINLINE bool IsEquipped() { return bEquipped; }
 	FORCEINLINE bool isPlayingMontage() { return bPlayingMontage; }
+	FORCEINLINE bool IsAiming() { return bAiming; }
+
+	
 
 	void Equip();
+	void Begin_Equip();
+	void End_Equip();
+
 	void Unequip();
+	void Begin_Unequip();
+	void End_Unequip();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Soket")
-	FName HolsterSoket;
+	FName HolsterSocket;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Soket")
-	FName HandSoket;
+	FName HandSocket;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montage")
 	UAnimMontage* EquipMontage;
@@ -51,4 +59,5 @@ private:
 
 	bool bEquipped;
 	bool bPlayingMontage;
+	bool bAiming;
 };
