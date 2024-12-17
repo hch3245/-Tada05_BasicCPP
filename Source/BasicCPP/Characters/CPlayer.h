@@ -8,6 +8,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class ACAR4;
+class UCCrossHairWidget;
 
 UCLASS()
 class BASICCPP_API ACPlayer : public ACharacter, public ICWeaponInterface
@@ -64,5 +65,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
 	TSubclassOf<ACAR4> AR4Class;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<UCCrossHairWidget> CrossHairWidgetClass;
+
 	ACAR4* AR4;
+	UCCrossHairWidget* CrossHairWidget;
 };

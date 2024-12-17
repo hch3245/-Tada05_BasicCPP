@@ -47,6 +47,16 @@ void ACAR4::Tick(float DeltaTime)
 
 }
 
+void ACAR4::Begin_Aim()
+{
+	bAiming = true;
+}
+
+void ACAR4::End_Aim()
+{
+	bAiming = false;
+}
+
 void ACAR4::Equip()
 {
 	if (bEquipped) return;
@@ -55,7 +65,7 @@ void ACAR4::Equip()
 	bEquipped = true;
 	bPlayingMontage = true;
 
-	OwnerCharacter->PlayAnimMontage(EquipMontage);
+	OwnerCharacter->PlayAnimMontage(EquipMontage, 2.f);
 }
 
 void ACAR4::Begin_Equip()
@@ -80,7 +90,7 @@ void ACAR4::Unequip()
 	bEquipped = false;
 	bPlayingMontage = true;
 
-	OwnerCharacter->PlayAnimMontage(UnequipMontage);
+	OwnerCharacter->PlayAnimMontage(UnequipMontage, 2.f);
 }
 
 void ACAR4::Begin_Unequip()

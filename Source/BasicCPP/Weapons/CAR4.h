@@ -27,7 +27,8 @@ public:
 	FORCEINLINE bool isPlayingMontage() { return bPlayingMontage; }
 	FORCEINLINE bool IsAiming() { return bAiming; }
 
-	
+	void Begin_Aim();
+	void End_Aim();
 
 	void Equip();
 	void Begin_Equip();

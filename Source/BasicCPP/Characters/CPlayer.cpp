@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Weapons/CAR4.h"
+#include "UI/CCrossHairWidget.h"
 
 ACPlayer::ACPlayer()
 {
@@ -47,6 +48,12 @@ ACPlayer::ACPlayer()
 		AR4Class = WeaponClass.Class;
 	}
 
+
+	//CrossHairWidget Class
+	ConstructorHelpers::FClassFinder<UCCrossHairWidget> WidgetClass(TEXT("/Game/UI/WB_CrossHair"));
+	if (WidgetClass.Succeeded()) {
+		CrossHairWidgetClass = WidgetClass.Class;
+	}
 }
 
 void ACPlayer::BeginPlay()
@@ -59,6 +66,9 @@ void ACPlayer::BeginPlay()
 		AR4 = GetWorld()->SpawnActor<ACAR4>(AR4Class, SpawnParams);
 		AR4->Equip();
 	}
+
+	CrossHairWidget = CreateWidget<UCCrossHairWidget>(GetController<APlayerController>(), CrossHairWidgetClass);
+	CrossHairWidget->AddToViewport();
 }
 
 void ACPlayer::Tick(float DeltaTime)
@@ -127,6 +137,8 @@ void ACPlayer::OnRifle()
 {
 
 	if (AR4->IsEquipped()) {
+		OffAim();
+
 		AR4->Unequip();
 		return;
 	}
@@ -145,6 +157,8 @@ void ACPlayer::OnAim()
 	SpringArmComp->TargetArmLength = 150.f;
 	SpringArmComp->SocketOffset = FVector(0, 30, 10);
 
+	AR4->Begin_Aim();
+
 	ZoomIn();
 }
 
@@ -159,6 +173,8 @@ void ACPlayer::OffAim()
 	SpringArmComp->TargetArmLength = 300.f;
 	SpringArmComp->SocketOffset = FVector(0, 60, 0);
 	
+	AR4->End_Aim();
+
 	ZoomOut();
 }
 
