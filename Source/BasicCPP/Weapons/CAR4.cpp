@@ -1,9 +1,13 @@
 #include "CAR4.h"
 #include "DrawDebugHelpers.h"
-#include "Utilities/CLog.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Character.h"
+#include "Sound/SoundCue.h"
+#include "Utilities/CLog.h"
 #include "Interfaces/CWeaponInterface.h"
+#include "CBullet.h"
+
 
 static TAutoConsoleVariable<bool> CVarDebugLine(TEXT("Tada.DebugLine"), false, TEXT("Enable draw aim line"), ECVF_Cheat);
 
@@ -32,6 +36,15 @@ ACAR4::ACAR4()
 		UnequipMontage = UnequipMontageAsset.Object;
 	}
 
+	ConstructorHelpers::FClassFinder<UCameraShake> CameraShakeClass(TEXT("/Game/Player/Shake_Fire"));
+	if (CameraShakeClass.Succeeded()) {
+		FireCameraShakeClass = CameraShakeClass.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<ACBullet> BulletClass_Asset(TEXT("/Game/Player/BP_CBullet"));
+	if (BulletClass_Asset.Succeeded()) {
+		BulletClass = BulletClass_Asset.Class;
+	}
 
 	HolsterSocket = "Holster_AR4";
 	HandSocket = "Hand_AR4";
@@ -167,10 +180,30 @@ void ACAR4::End_Fire()
 
 void ACAR4::Firing()
 {
-	//LineTrace for Visiblity
-	//->SimulatePhy => Add Impulse
-	//-> Cosmetic
+	//Play Camera Shake
+	APlayerController* PC = OwnerCharacter->GetController<APlayerController>();
+	if (PC) {
+		PC->PlayerCameraManager->PlayCameraShake(FireCameraShakeClass);
+	}
+	
+	//Play Cosmetic
+	FVector MuzzleLocation = MeshComp->GetSocketLocation("MuzzleFlash");
 
+	if (ensure(MuzzleVFX)) {
+		UGameplayStatics::SpawnEmitterAttached(MuzzleVFX, MeshComp, "MuzzleFlash");
+	}
+
+	if (ensure(EjectVFX)) {
+		UGameplayStatics::SpawnEmitterAttached(EjectVFX, MeshComp, "EjectBullet");
+	}
+	
+	if (ensure(FireSound)){
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, MuzzleLocation);
+
+	}
+
+
+	//LineTrace
 	ICWeaponInterface* OwenrInterface = Cast<ICWeaponInterface>(OwnerCharacter);
 	if (!OwenrInterface) return;
 
@@ -192,9 +225,16 @@ void ACAR4::Firing()
 	{
 		if (Hit.GetComponent()->IsSimulatingPhysics())
 		{
-			Hit.GetComponent()->AddImpulseAtLocation(Direction * 3000.f, OwnerCharacter->GetActorLocation());
-			//Todo. 쏴서 넘어지는지 보기~~
+			FVector ImpactDirection = (Hit.GetActor()->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+
+			Hit.GetComponent()->AddImpulseAtLocation(ImpactDirection * 3000.f, OwnerCharacter->GetActorLocation());
 		}
 	}
+
+	//Spawn Bullet
+	if (BulletClass) {
+		GetWorld()->SpawnActor<ACBullet>(BulletClass, MuzzleLocation, Direction.Rotation());
+	}
+
 }
 

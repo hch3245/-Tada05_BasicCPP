@@ -7,6 +7,9 @@
 class USkeletalMeshComponent;
 class ACharacter;
 class UAnimMontage;
+class ACBullet;
+class UParticleSystem;
+class USoundCue;
 
 UCLASS()
 class BASICCPP_API ACAR4 : public AActor
@@ -58,6 +61,24 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* UnequipMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CameraShake")
+	TSubclassOf<UCameraShake> FireCameraShakeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	TSubclassOf<ACBullet> BulletClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	UParticleSystem* MuzzleVFX;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	UParticleSystem* EjectVFX;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	UParticleSystem* ImpactVFX;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	USoundCue* FireSound;
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
