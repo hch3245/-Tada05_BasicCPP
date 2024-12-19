@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,7 +8,7 @@ UCLASS()
 class BASICCPP_API ACBlueprintEvent : public ACBoxBase
 {
 	GENERATED_BODY()
-	
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -21,12 +19,11 @@ protected:
 	UFUNCTION(BlueprintNativeEvent)
 	void ResetBodyColor();
 
-
 private:
 	UFUNCTION()
-		void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	UFUNCTION()
-		void EndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void EndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 };

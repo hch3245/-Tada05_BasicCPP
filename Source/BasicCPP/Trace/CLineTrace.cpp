@@ -1,15 +1,12 @@
-
-
 #include "CLineTrace.h"
 #include "Components/TextRenderComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 
-
 ACLineTrace::ACLineTrace()
 {
- 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
 	TextRenderComp = CreateDefaultSubobject<UTextRenderComponent>("TextRenderComp");
 	RootComponent = TextRenderComp;
@@ -63,16 +60,16 @@ void ACLineTrace::Tick(float DeltaTime)
 		EDrawDebugTrace::ForOneFrame,
 		Hit,
 		true
-	)) {
+	))
+	{
 		OnLineTraceResult.Broadcast(Hit.GetActor(), FLinearColor::Red);
 	}
-
-
 }
 
 void ACLineTrace::LineTraced(AActor* InActor, FLinearColor InColor)
 {
-	DrawDebugString(
+	DrawDebugString
+	(
 		GetWorld(),
 		FVector(0, 0, 120),
 		InActor->GetName(),

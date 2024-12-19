@@ -9,12 +9,10 @@ class BASICCPP_API UCCrossHairWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnTarget();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OffTarget();
-
 };

@@ -1,25 +1,22 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "CAnimNotifyState_Equip.h"
 #include "Interfaces/CWeaponInterface.h"
 #include "Weapons/CAR4.h"
 
-FString UCAnimNotifyState_Equip::GetNotifyName_Implementation() const {
+FString UCAnimNotifyState_Equip::GetNotifyName_Implementation() const
+{
 	return "Equip";
 }
 
 void UCAnimNotifyState_Equip::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
-
+	
 	ICWeaponInterface* OwnerInterface = Cast<ICWeaponInterface>(MeshComp->GetOwner());
 	if (!OwnerInterface) return;
 
 	ACAR4* Weapon = OwnerInterface->GetWeapon();
-
 	if (!Weapon) return;
-
+	
 	Weapon->Begin_Equip();
 }
 
@@ -31,7 +28,6 @@ void UCAnimNotifyState_Equip::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 	if (!OwnerInterface) return;
 
 	ACAR4* Weapon = OwnerInterface->GetWeapon();
-
 	if (!Weapon) return;
 
 	Weapon->End_Equip();

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,12 +12,9 @@ class BASICCPP_API ACVertex : public AActor
 public:	
 	ACVertex();
 
-protected:
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UStaticMeshComponent* MeshComp;
-
-	
 
 };

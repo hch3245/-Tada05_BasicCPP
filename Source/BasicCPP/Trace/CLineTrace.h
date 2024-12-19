@@ -12,26 +12,26 @@ UCLASS()
 class BASICCPP_API ACLineTrace : public AActor
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	ACLineTrace();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	virtual void Tick(float DeltaTime) override;
 
 public:
 	UPROPERTY(BlueprintAssignable)
-		FLineTraceResult OnLineTraceResult;
+	FLineTraceResult OnLineTraceResult;
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-		UTextRenderComponent* TextRenderComp;
+	UTextRenderComponent* TextRenderComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Vertex")
-		TSubclassOf<AActor> VertexClass;
+	TSubclassOf<AActor> VertexClass;
 
 private:
 	UFUNCTION()

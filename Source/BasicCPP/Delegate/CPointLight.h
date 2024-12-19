@@ -22,7 +22,7 @@ private:
 	void OffLights();
 
 	UFUNCTION()
-	FString SetLight1Color (FLinearColor InColor);
+	FString SetLight1Color(FLinearColor InColor);
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")

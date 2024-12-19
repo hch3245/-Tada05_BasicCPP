@@ -17,15 +17,14 @@ void ACDelegate::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 		OnBoxTriggerBeginOveralp.Execute();
 	}
 
-
-	if (OnBoxTriggerOveralpOneParam.IsBound()) {
+	if (OnBoxTriggerOveralpOneParam.IsBound())
+	{
 		FLinearColor RandomColor = FLinearColor::MakeRandomColor();
 		RandomColor.A = 1.f;
 
 		FString String = OnBoxTriggerOveralpOneParam.Execute(RandomColor);
 
 		CLog::Print(String, -1, 10.f, RandomColor.ToFColor(true));
-
 	}
 }
 

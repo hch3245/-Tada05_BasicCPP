@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Weapons/CAR4.h"
 #include "UI/CCrossHairWidget.h"
 
@@ -44,14 +45,15 @@ ACPlayer::ACPlayer()
 
 	//Weapon Class
 	ConstructorHelpers::FClassFinder<ACAR4> WeaponClass(TEXT("/Game/Player/BP_CAR4"));
-	if (WeaponClass.Succeeded()) {
+	if (WeaponClass.Succeeded())
+	{
 		AR4Class = WeaponClass.Class;
 	}
 
-
 	//CrossHairWidget Class
 	ConstructorHelpers::FClassFinder<UCCrossHairWidget> WidgetClass(TEXT("/Game/UI/WB_CrossHair"));
-	if (WidgetClass.Succeeded()) {
+	if (WidgetClass.Succeeded())
+	{
 		CrossHairWidgetClass = WidgetClass.Class;
 	}
 }
@@ -60,15 +62,21 @@ void ACPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (AR4Class) {
+	if (AR4Class)
+	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		AR4 = GetWorld()->SpawnActor<ACAR4>(AR4Class, SpawnParams);
 		AR4->Equip();
 	}
 
-	CrossHairWidget = CreateWidget<UCCrossHairWidget>(GetController<APlayerController>(), CrossHairWidgetClass);
-	CrossHairWidget->AddToViewport();
+	if (CrossHairWidgetClass)
+	{
+		CrossHairWidget = CreateWidget<UCCrossHairWidget>(GetController<APlayerController>(), CrossHairWidgetClass);
+		CrossHairWidget->AddToViewport();
+
+		CrossHairWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void ACPlayer::Tick(float DeltaTime)
@@ -90,11 +98,13 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPlayer::OnSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayer::OffSprint);
 
-
 	PlayerInputComponent->BindAction("Rifle", IE_Pressed, this, &ACPlayer::OnRifle);
 
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ACPlayer::OnAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ACPlayer::OffAim);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ACPlayer::OnFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ACPlayer::OffFire);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -135,8 +145,8 @@ void ACPlayer::OffSprint()
 
 void ACPlayer::OnRifle()
 {
-
-	if (AR4->IsEquipped()) {
+	if (AR4->IsEquipped())
+	{
 		OffAim();
 
 		AR4->Unequip();
@@ -149,33 +159,53 @@ void ACPlayer::OnRifle()
 void ACPlayer::OnAim()
 {
 	if (!AR4->IsEquipped()) return;
-	if (AR4->isPlayingMontage()) return;
+	if (AR4->IsPlayingMontage()) return;
 
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
-	
+
 	SpringArmComp->TargetArmLength = 150.f;
 	SpringArmComp->SocketOffset = FVector(0, 30, 10);
 
 	AR4->Begin_Aim();
 
 	ZoomIn();
+
+	if (CrossHairWidget)
+	{
+		CrossHairWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void ACPlayer::OffAim()
 {
 	if (!AR4->IsEquipped()) return;
-	if (AR4->isPlayingMontage()) return;
+	if (AR4->IsPlayingMontage()) return;
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	SpringArmComp->TargetArmLength = 300.f;
 	SpringArmComp->SocketOffset = FVector(0, 60, 0);
-	
-	AR4->End_Aim();
 
 	ZoomOut();
+
+	AR4->End_Aim();
+
+	if (CrossHairWidget)
+	{
+		CrossHairWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void ACPlayer::OnFire()
+{
+	AR4->Begin_Fire();
+}
+
+void ACPlayer::OffFire()
+{
+	AR4->End_Fire();
 }
 
 void ACPlayer::SetBodyColor(FLinearColor InColor)
@@ -183,4 +213,35 @@ void ACPlayer::SetBodyColor(FLinearColor InColor)
 	FVector BodyColor = FVector(InColor.R, InColor.G, InColor.B);
 
 	GetMesh()->SetVectorParameterValueOnMaterials("BodyColor", BodyColor);
+}
+
+void ACPlayer::VisibleCrossHairWidget(bool bVisible)
+{
+	bVisible
+		? CrossHairWidget->SetVisibility(ESlateVisibility::Visible)
+		: CrossHairWidget->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void ACPlayer::GetAimInfo(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection)
+{
+	OutAimDirection = CameraComp->GetForwardVector();
+
+	FVector CamLoc = CameraComp->GetComponentToWorld().GetLocation();;
+
+	FVector MuzzleLocation = AR4->GetMeshComp()->GetSocketLocation("MuzzleFlash");
+
+	OutAimStart = CamLoc + OutAimDirection * ((MuzzleLocation - CamLoc) | OutAimDirection);
+
+	FVector RandomConeDegree = UKismetMathLibrary::RandomUnitVectorInConeInDegrees(OutAimDirection, 0.2f);
+	OutAimEnd = OutAimStart + RandomConeDegree * 25000.f;
+}
+
+void ACPlayer::OnTarget()
+{
+	CrossHairWidget->OnTarget();
+}
+
+void ACPlayer::OffTarget()
+{
+	CrossHairWidget->OffTarget();
 }

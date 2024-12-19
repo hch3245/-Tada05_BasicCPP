@@ -40,19 +40,29 @@ private:
 	void OnAim();
 	void OffAim();
 
+	void OnFire();
+	void OffFire();
+
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ZoomIn();
-	
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void ZoomOut();
-	
+
 public:
-	FORCEINLINE ACAR4* GetWeapon() {return AR4;};
+	FORCEINLINE ACAR4* GetWeapon() { return AR4; };
+	void GetAimInfo(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection) override;
+
+	void OnTarget() override;
+	void OffTarget() override;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetBodyColor(FLinearColor InColor);
+
+	UFUNCTION(Exec)
+	void VisibleCrossHairWidget(bool bVisible);
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
@@ -65,9 +75,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
 	TSubclassOf<ACAR4> AR4Class;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UCCrossHairWidget> CrossHairWidgetClass;
 
 	ACAR4* AR4;
 	UCCrossHairWidget* CrossHairWidget;
+
 };

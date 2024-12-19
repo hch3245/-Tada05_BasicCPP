@@ -1,4 +1,3 @@
-
 #include "CParticle.h"
 #include "Kismet/GameplayStatics.h"
 #include "CEvent.h"
@@ -17,9 +16,10 @@ void ACParticle::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACEvent::StaticClass(), Actors);
 
 	if (Actors.Num() < 1) return;
-
+	
 	ACEvent* Trigger = Cast<ACEvent>(Actors[0]);
-	if (Trigger) {
+	if (Trigger)
+	{
 		Trigger->OnParticleEvent.AddUObject(this, &ACParticle::SpawnRandomParticle);
 	}
 }
@@ -29,10 +29,7 @@ void ACParticle::SpawnRandomParticle(int32 InIndex)
 	FTransform TM;
 	TM.SetLocation(GetActorLocation());
 
-
 	if (!Particles[InIndex]) return;
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particles[InIndex], TM);
 }
-
-

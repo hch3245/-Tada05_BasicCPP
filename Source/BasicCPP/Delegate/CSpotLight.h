@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -19,17 +17,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-
 private:
 	UFUNCTION()
-		void OnLight(int32 InIndex, FLinearColor InColor);
+	void OnLight(int32 InIndex, FLinearColor InColor);
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-		USceneComponent* RootComp;
+	USceneComponent* RootComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-		USpotLightComponent* SpotLightComps[3];
-
+	USpotLightComponent* SpotLightComps[3];
 
 };

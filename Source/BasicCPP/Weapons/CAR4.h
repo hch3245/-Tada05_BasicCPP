@@ -24,8 +24,9 @@ public:
 
 public:
 	FORCEINLINE bool IsEquipped() { return bEquipped; }
-	FORCEINLINE bool isPlayingMontage() { return bPlayingMontage; }
+	FORCEINLINE bool IsPlayingMontage() { return bPlayingMontage; }
 	FORCEINLINE bool IsAiming() { return bAiming; }
+	FORCEINLINE USkeletalMeshComponent* GetMeshComp() { return MeshComp; }
 
 	void Begin_Aim();
 	void End_Aim();
@@ -38,17 +39,24 @@ public:
 	void Begin_Unequip();
 	void End_Unequip();
 
+	void Begin_Fire();
+	void End_Fire();
+
+	//Todo. 나중에 설명하겠음
+	UFUNCTION()
+	void Firing();
+
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Soket")
+	UPROPERTY(EditDefaultsOnly, Category = "Socket")
 	FName HolsterSocket;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Soket")
+	UPROPERTY(EditDefaultsOnly, Category = "Socket")
 	FName HandSocket;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Montage")
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* EquipMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Montage")
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* UnequipMontage;
 
 private:
@@ -61,4 +69,5 @@ private:
 	bool bEquipped;
 	bool bPlayingMontage;
 	bool bAiming;
+	bool bFiring;
 };

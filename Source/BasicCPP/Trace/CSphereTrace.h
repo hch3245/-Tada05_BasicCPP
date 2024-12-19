@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -24,5 +23,6 @@ protected:
 	USceneComponent* RootComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-		UParticleSystemComponent* ParticleComp;
+	UParticleSystemComponent* ParticleComp;
+
 };

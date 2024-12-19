@@ -20,9 +20,8 @@ private:
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-		USceneComponent* RootComp;
+	USceneComponent* RootComp;
 
 	UPROPERTY(EditAnywhere, Category = "Particle")
 	UParticleSystem* Particles[3];
-
 };

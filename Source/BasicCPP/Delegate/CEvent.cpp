@@ -1,4 +1,3 @@
-
 #include "CEvent.h"
 #include "Kismet/KismetMathLibrary.h"
 
