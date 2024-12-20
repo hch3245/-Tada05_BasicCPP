@@ -9,6 +9,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class ACAR4;
 class UCCrossHairWidget;
+class UCFullyAutoWidget;
 
 UCLASS()
 class BASICCPP_API ACPlayer : public ACharacter, public ICWeaponInterface
@@ -42,6 +43,8 @@ private:
 
 	void OnFire();
 	void OffFire();
+
+	void OnAutoFire();
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
@@ -78,7 +81,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UCCrossHairWidget> CrossHairWidgetClass;
 
-	ACAR4* AR4;
 	UCCrossHairWidget* CrossHairWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UCFullyAutoWidget> FullyAutoWidgetClass;
+
+	UCFullyAutoWidget* FullyAutoWidget;
+
+	ACAR4* AR4;
+	
 
 };

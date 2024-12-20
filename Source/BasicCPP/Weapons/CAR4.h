@@ -10,6 +10,7 @@ class UAnimMontage;
 class ACBullet;
 class UParticleSystem;
 class USoundCue;
+class UMaterial;
 
 UCLASS()
 class BASICCPP_API ACAR4 : public AActor
@@ -29,7 +30,12 @@ public:
 	FORCEINLINE bool IsEquipped() { return bEquipped; }
 	FORCEINLINE bool IsPlayingMontage() { return bPlayingMontage; }
 	FORCEINLINE bool IsAiming() { return bAiming; }
+	FORCEINLINE bool IsFiring() { return bFiring; }
+	FORCEINLINE bool IsAutoFiring() { return bFullyAuto; }
 	FORCEINLINE USkeletalMeshComponent* GetMeshComp() { return MeshComp; }
+	
+
+	void ToggleAutoFire();
 
 	void Begin_Aim();
 	void End_Aim();
@@ -45,7 +51,7 @@ public:
 	void Begin_Fire();
 	void End_Fire();
 
-	//Todo. 나중에 설명하겠음
+	// Set timer에서 호출하려면 UFunction
 	UFUNCTION()
 	void Firing();
 
@@ -80,6 +86,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Effect")
 	USoundCue* FireSound;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	UMaterial* BulletHoleMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AutoFire")
+	float RapidTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AutoFire")
+	float PitchSpeed;
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
@@ -91,4 +106,9 @@ private:
 	bool bPlayingMontage;
 	bool bAiming;
 	bool bFiring;
+	bool bFullyAuto;
+
+	FTimerHandle AutoFireTimer;
+
+	float CurrentPitch;
 };

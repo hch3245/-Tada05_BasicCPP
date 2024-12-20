@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapons/CAR4.h"
 #include "UI/CCrossHairWidget.h"
+#include "UI/CFullyAutoWidget.h"
 
 ACPlayer::ACPlayer()
 {
@@ -50,11 +51,17 @@ ACPlayer::ACPlayer()
 		AR4Class = WeaponClass.Class;
 	}
 
-	//CrossHairWidget Class
-	ConstructorHelpers::FClassFinder<UCCrossHairWidget> WidgetClass(TEXT("/Game/UI/WB_CrossHair"));
-	if (WidgetClass.Succeeded())
+	// Widget Class
+	ConstructorHelpers::FClassFinder<UCCrossHairWidget> WidgetClass_CrossHair(TEXT("/Game/UI/WB_CrossHair"));
+	if (WidgetClass_CrossHair.Succeeded())
 	{
-		CrossHairWidgetClass = WidgetClass.Class;
+		CrossHairWidgetClass = WidgetClass_CrossHair.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<UCFullyAutoWidget> WidgetClass_FullyAuto(TEXT("/Game/UI/WB_FullyAuto"));
+	if (WidgetClass_FullyAuto.Succeeded())
+	{
+		FullyAutoWidgetClass = WidgetClass_FullyAuto.Class;
 	}
 }
 
@@ -76,6 +83,12 @@ void ACPlayer::BeginPlay()
 		CrossHairWidget->AddToViewport();
 
 		CrossHairWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (FullyAutoWidgetClass)
+	{
+		FullyAutoWidget = CreateWidget<UCFullyAutoWidget>(GetController<APlayerController>(), FullyAutoWidgetClass);
+		FullyAutoWidget->AddToViewport();
 	}
 }
 
@@ -105,6 +118,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ACPlayer::OnFire);
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ACPlayer::OffFire);
+
+	PlayerInputComponent->BindAction("AutoFire", IE_Released, this, &ACPlayer::OnAutoFire);
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -206,6 +221,16 @@ void ACPlayer::OnFire()
 void ACPlayer::OffFire()
 {
 	AR4->End_Fire();
+}
+
+void ACPlayer::OnAutoFire()
+{
+	if (AR4->IsFiring()) return;
+	AR4->ToggleAutoFire();
+
+	AR4->IsAutoFiring()
+		? FullyAutoWidget->EnableImage()
+		: FullyAutoWidget->DisableImage();
 }
 
 void ACPlayer::SetBodyColor(FLinearColor InColor)
